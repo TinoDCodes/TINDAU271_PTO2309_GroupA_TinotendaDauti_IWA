@@ -1,22 +1,12 @@
-import { authors, books } from "./data.js";
+import { authors, books, state, themeColors } from "./data.js";
 import { createPreview, documentHtml } from "./view.js";
 
-const { list } = documentHtml;
+const { list, settings } = documentHtml;
 // matches = books
 // page = 1;
 
 if (!books && !Array.isArray(books)) throw new Error("Source required");
 // if (!range && range.length < 2) throw new Error('Range must be an array with two numbers')
-
-// day = {
-//     dark: '10, 10, 20',
-//     light: '255, 255, 255',
-// }
-
-// night = {
-//     dark: '255, 255, 255',
-//     light: '10, 10, 20',
-// }
 
 const extracted = books.slice(0, 36);
 
@@ -32,6 +22,42 @@ for (const bookItem of extracted) {
 
   list.items.appendChild(preview);
 }
+
+/**
+ * TODO: check method is complete and write JSDoc comment
+ */
+const handleToggleSettings = (event) => {
+  const isCancel = event.target === settings["overlay-cancel"];
+
+  if (isCancel) {
+    settings["theme-select"].value = state.theme;
+    settings.overlay.open = false;
+  } else {
+    settings.overlay.open = true;
+  }
+};
+
+/**
+ * TODO: complete JSDoc comment for this method
+ * @param {Event} event
+ */
+const handleSaveSettings = (event) => {
+  event.preventDefault();
+
+  if (settings["theme-select"].value !== state.theme) {
+    state.theme = settings["theme-select"].value;
+    document.documentElement.style.setProperty(
+      "--color-dark",
+      themeColors[state.theme].dark
+    );
+    document.documentElement.style.setProperty(
+      "--color-light",
+      themeColors[state.theme].light
+    );
+  }
+
+  settings.overlay.open = false;
+};
 
 // genres = document.createDocumentFragment()
 // element = document.createElement('option')
@@ -185,3 +211,7 @@ for (const bookItem of extracted) {
 //     data-list-subtitle === '${authors[active.author]} (${Date(active.published).year})'
 //     data-list-description === active.description
 // }
+
+settings.button.addEventListener("click", handleToggleSettings);
+settings["overlay-cancel"].addEventListener("click", handleToggleSettings);
+settings.form.addEventListener("submit", handleSaveSettings);

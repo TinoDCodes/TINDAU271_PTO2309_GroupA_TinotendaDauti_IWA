@@ -15,6 +15,9 @@ export const documentHtml = {
   settings: {
     button: document.querySelector("[data-header-settings]"),
     overlay: document.querySelector("[data-settings-overlay]"),
+    form: document.querySelector("[data-settings-form]"),
+    "overlay-cancel": document.querySelector("[data-settings-cancel]"),
+    "theme-select": document.querySelector("[data-settings-theme]"),
   },
 };
 
