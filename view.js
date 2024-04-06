@@ -1,3 +1,5 @@
+import { authors } from "./data.js";
+
 /**
  * TODO: complete JSDoc comment for this object
  */
@@ -11,6 +13,10 @@ export const documentHtml = {
   search: {
     button: document.querySelector("[data-header-search]"),
     overlay: document.querySelector("[data-search-overlay]"),
+    title: document.querySelector("[data-search-title]"),
+    genres: document.querySelector("[data-search-genres]"),
+    authors: document.querySelector("[data-search-authors]"),
+    cancel: document.querySelector("[data-search-cancel]"),
   },
   settings: {
     button: document.querySelector("[data-header-settings]"),
@@ -26,7 +32,7 @@ export const documentHtml = {
  * @param {*} param0
  * @returns
  */
-export const createPreview = ({ author, id, image, title }) => {
+const createPreview = ({ author, id, image, title }) => {
   const element = document.createElement("div");
   element.className = "preview";
   element.dataset.id = id;
@@ -42,4 +48,38 @@ export const createPreview = ({ author, id, image, title }) => {
       `;
 
   return element;
+};
+
+/**
+ * TODO: write JSdoc comment
+ * @param {Array} booksToShow
+ */
+export const loadListItems = (booksToShow) => {
+  const { items } = documentHtml.list;
+  for (const bookItem of booksToShow) {
+    const { author, id, image, title } = bookItem;
+    const authorName = authors[author];
+    const preview = createPreview({
+      author: authorName,
+      id,
+      image,
+      title,
+    });
+
+    items.appendChild(preview);
+  }
+};
+
+/**
+ * TODO: write JSDoc comment
+ * @param {number} booksLeft
+ * @param {boolean} isDisabled
+ */
+export const updateShowMoreBtn = (booksLeft, isDisabled) => {
+  const { button } = documentHtml.list;
+
+  button.innerHTML = /* html */ `
+      <p>Show more <span class="list__remaining">(${booksLeft})</span></p>
+  `;
+  button.disabled = isDisabled;
 };

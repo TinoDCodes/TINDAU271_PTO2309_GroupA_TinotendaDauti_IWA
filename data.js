@@ -2,6 +2,8 @@ export const BOOKS_PER_PAGE = 36;
 
 export const state = {
   theme: "day",
+  "extracted-books": [],
+  "books-per-page": 36,
 };
 
 export const themeColors = {

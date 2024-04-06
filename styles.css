@@ -185,7 +185,9 @@ option {
   border: 1px solid rgba(var(--color-blue), 1);
   max-width: 10rem;
   margin: 0 auto;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .list__remaining {

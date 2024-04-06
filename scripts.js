@@ -1,27 +1,83 @@
-import { authors, books, state, themeColors } from "./data.js";
-import { createPreview, documentHtml } from "./view.js";
+import { authors, books, genres, state, themeColors } from "./data.js";
+import { documentHtml, loadListItems, updateShowMoreBtn } from "./view.js";
 
-const { list, settings } = documentHtml;
+const { list, settings, search } = documentHtml;
 // matches = books
 // page = 1;
 
 if (!books && !Array.isArray(books)) throw new Error("Source required");
 // if (!range && range.length < 2) throw new Error('Range must be an array with two numbers')
 
-const extracted = books.slice(0, 36);
+// TODO: write a comment for this process below
+if (
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches
+) {
+  state.theme = "night";
+  settings["theme-select"].value = state.theme;
 
-for (const bookItem of extracted) {
-  const { author, id, image, title } = bookItem;
-  const authorName = authors[author];
-  const preview = createPreview({
-    author: authorName,
-    id,
-    image,
-    title,
-  });
-
-  list.items.appendChild(preview);
+  document.documentElement.style.setProperty(
+    "--color-dark",
+    themeColors[state.theme].dark
+  );
+  document.documentElement.style.setProperty(
+    "--color-light",
+    themeColors[state.theme].light
+  );
 }
+
+state["extracted-books"] = books.slice(0, state["books-per-page"]);
+
+loadListItems(state["extracted-books"]);
+
+updateShowMoreBtn(
+  books.length - state["books-per-page"],
+  state["books-per-page"] === books.length
+);
+
+// TODO: add comment for the below process
+const allGenresOption = document.createElement("option");
+allGenresOption.value = "any";
+allGenresOption.innerText = "All Genres";
+search.genres.appendChild(allGenresOption);
+
+for (const [id, name] of Object.entries(genres)) {
+  const genreOption = document.createElement("option");
+  genreOption.value = id;
+  genreOption.innerText = name;
+  search.genres.appendChild(genreOption);
+}
+
+// TODO: complete comment for the process below
+const allAuthorsOption = document.createElement("option");
+allAuthorsOption.value = "any";
+allAuthorsOption.innerText = "All Authors";
+search.authors.appendChild(allAuthorsOption);
+
+for (const [id, name] of Object.entries(authors)) {
+  const authorOption = document.createElement("option");
+  authorOption.value = id;
+  authorOption.innerText = name;
+  search.authors.appendChild(authorOption);
+}
+
+/**
+ * TODO: complete method and comment
+ * @param {Event} event
+ */
+const handleToggleSearch = (event) => {
+  const isCancel = event.target === search.cancel;
+  const { title, genres, authors } = search;
+
+  if (isCancel) {
+    title.value = "";
+    genres.value = "any";
+    authors.value = "any";
+    search.overlay.open = false;
+  } else {
+    search.overlay.open = true;
+  }
+};
 
 /**
  * TODO: check method is complete and write JSDoc comment
@@ -59,41 +115,32 @@ const handleSaveSettings = (event) => {
   settings.overlay.open = false;
 };
 
-// genres = document.createDocumentFragment()
-// element = document.createElement('option')
-// element.value = 'any'
-// element = 'All Genres'
-// genres.appendChild(element)
+/**
+ * TODO: complete JSDoc comment for this function
+ * @param {Event} event
+ */
+const handleShowMore = (event) => {
+  const newLength = state["books-per-page"] * 2;
+  const prevLength = state["books-per-page"];
 
-// for ([id, name]; Object.entries(genres); i++) {
-//     document.createElement('option')
-//     element.value = value
-//     element.innerText = text
-//     genres.appendChild(element)
-// }
+  state["books-per-page"] = newLength > books.length ? books.length : newLength;
+  state["extracted-books"] =
+    state["books-per-page"] === books.length
+      ? books
+      : books.slice(0, state["books-per-page"]);
 
-// data-search-genres.appendChild(genres)
+  const itemsToLoad = state["extracted-books"].slice(
+    prevLength,
+    state["books-per-page"]
+  );
 
-// authors = document.createDocumentFragment()
-// element = document.createElement('option')
-// element.value = 'any'
-// element.innerText = 'All Authors'
-// authors.appendChild(element)
+  loadListItems(itemsToLoad);
+  updateShowMoreBtn(
+    books.length - state["books-per-page"],
+    state["books-per-page"] === books.length
+  );
+};
 
-// for ([id, name];Object.entries(authors); id++) {
-//     document.createElement('option')
-//     element.value = value
-//     element = text
-//     authors.appendChild(element)
-// }
-
-// data-search-authors.appendChild(authors)
-
-// data-settings-theme.value === window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
-// v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches? 'night' | 'day'
-
-// documentElement.style.setProperty('--color-dark', css[v].dark);
-// documentElement.style.setProperty('--color-light', css[v].light);
 // data-list-button = "Show more (books.length - BOOKS_PER_PAGE)"
 
 // data-list-button.disabled = !(matches.length - [page * BOOKS_PER_PAGE] > 0)
@@ -181,15 +228,6 @@ const handleSaveSettings = (event) => {
 //     data-search-overlay.open = false
 // }
 
-// data-settings-overlay.submit; {
-//     preventDefault()
-//     const formData = new FormData(event.target)
-//     const result = Object.fromEntries(formData)
-//     document.documentElement.style.setProperty('--color-dark', css[result.theme].dark);
-//     document.documentElement.style.setProperty('--color-light', css[result.theme].light);
-//     data-settings-overlay).open === false
-// }
-
 // data-list-items.click() {
 //     pathArray = Array.from(event.path || event.composedPath())
 //     active;
@@ -212,6 +250,11 @@ const handleSaveSettings = (event) => {
 //     data-list-description === active.description
 // }
 
+search.button.addEventListener("click", handleToggleSearch);
+search.cancel.addEventListener("click", handleToggleSearch);
+
 settings.button.addEventListener("click", handleToggleSettings);
 settings["overlay-cancel"].addEventListener("click", handleToggleSettings);
 settings.form.addEventListener("submit", handleSaveSettings);
+
+list.button.addEventListener("click", handleShowMore);
