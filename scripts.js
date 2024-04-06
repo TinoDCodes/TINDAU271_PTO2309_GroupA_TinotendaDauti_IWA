@@ -2,7 +2,8 @@ import { authors, books, genres, state, themeColors } from "./data.js";
 import { documentHtml, loadListItems, updateShowMoreBtn } from "./view.js";
 
 const { list, settings, search } = documentHtml;
-// matches = books
+
+state.matches = books;
 // page = 1;
 
 if (!books && !Array.isArray(books)) throw new Error("Source required");
@@ -26,13 +27,13 @@ if (
   );
 }
 
-state["extracted-books"] = books.slice(0, state["books-per-page"]);
+state["extracted-books"] = state.matches.slice(0, state["books-per-page"]);
 
 loadListItems(state["extracted-books"]);
 
 updateShowMoreBtn(
-  books.length - state["books-per-page"],
-  state["books-per-page"] === books.length
+  state.matches.length - state["books-per-page"],
+  state["books-per-page"] === state.matches.length
 );
 
 // TODO: add comment for the below process
@@ -123,11 +124,12 @@ const handleShowMore = (event) => {
   const newLength = state["books-per-page"] * 2;
   const prevLength = state["books-per-page"];
 
-  state["books-per-page"] = newLength > books.length ? books.length : newLength;
+  state["books-per-page"] =
+    newLength > state.matches.length ? state.matches.length : newLength;
   state["extracted-books"] =
-    state["books-per-page"] === books.length
-      ? books
-      : books.slice(0, state["books-per-page"]);
+    state["books-per-page"] === state.matches.length
+      ? state.matches
+      : state.matches.slice(0, state["books-per-page"]);
 
   const itemsToLoad = state["extracted-books"].slice(
     prevLength,
@@ -136,23 +138,11 @@ const handleShowMore = (event) => {
 
   loadListItems(itemsToLoad);
   updateShowMoreBtn(
-    books.length - state["books-per-page"],
-    state["books-per-page"] === books.length
+    state.matches.length - state["books-per-page"],
+    state["books-per-page"] === state.matches.length
   );
 };
 
-// data-list-button = "Show more (books.length - BOOKS_PER_PAGE)"
-
-// data-list-button.disabled = !(matches.length - [page * BOOKS_PER_PAGE] > 0)
-
-// data-list-button.innerHTML = /* html */ [
-//     '<span>Show more</span>',
-//     '<span class="list__remaining"> (${matches.length - [page * BOOKS_PER_PAGE] > 0 ? matches.length - [page * BOOKS_PER_PAGE] : 0})</span>',
-// ]
-
-// data-search-cancel.click() { data-search-overlay.open === false }
-// data-settings-cancel.click() { querySelect(data-settings-overlay).open === false }
-// data-settings-form.submit() { actions.settings.submit }
 // data-list-close.click() { data-list-active.open === false }
 
 // data-list-button.click() {

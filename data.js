@@ -1,9 +1,10 @@
-export const BOOKS_PER_PAGE = 36;
+export const DEFAULT_BOOKS_PER_PAGE = 36;
 
 export const state = {
   theme: "day",
   "extracted-books": [],
-  "books-per-page": 36,
+  "books-per-page": DEFAULT_BOOKS_PER_PAGE,
+  matches: [],
 };
 
 export const themeColors = {

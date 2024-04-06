@@ -79,7 +79,7 @@ export const updateShowMoreBtn = (booksLeft, isDisabled) => {
   const { button } = documentHtml.list;
 
   button.innerHTML = /* html */ `
-      <p>Show more <span class="list__remaining">(${booksLeft})</span></p>
+      <span>Show more <span class="list__remaining">(${booksLeft})</span></span>
   `;
   button.disabled = isDisabled;
 };
