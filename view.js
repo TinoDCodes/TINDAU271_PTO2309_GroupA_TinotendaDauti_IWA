@@ -17,6 +17,7 @@ export const documentHtml = {
     genres: document.querySelector("[data-search-genres]"),
     authors: document.querySelector("[data-search-authors]"),
     cancel: document.querySelector("[data-search-cancel]"),
+    form: document.querySelector("[data-search-form]"),
   },
   settings: {
     button: document.querySelector("[data-header-settings]"),
@@ -75,11 +76,11 @@ export const loadListItems = (booksToShow) => {
  * @param {number} booksLeft
  * @param {boolean} isDisabled
  */
-export const updateShowMoreBtn = (booksLeft, isDisabled) => {
+export const updateShowMoreBtn = (booksLeft) => {
   const { button } = documentHtml.list;
 
   button.innerHTML = /* html */ `
       <span>Show more <span class="list__remaining">(${booksLeft})</span></span>
   `;
-  button.disabled = isDisabled;
+  button.disabled = booksLeft === 0;
 };

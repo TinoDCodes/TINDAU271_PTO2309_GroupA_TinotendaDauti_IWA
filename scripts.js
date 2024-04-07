@@ -1,4 +1,11 @@
-import { authors, books, genres, state, themeColors } from "./data.js";
+import {
+  DEFAULT_BOOKS_PER_PAGE,
+  authors,
+  books,
+  genres,
+  state,
+  themeColors,
+} from "./data.js";
 import { documentHtml, loadListItems, updateShowMoreBtn } from "./view.js";
 
 const { list, settings, search } = documentHtml;
@@ -31,10 +38,7 @@ state["extracted-books"] = state.matches.slice(0, state["books-per-page"]);
 
 loadListItems(state["extracted-books"]);
 
-updateShowMoreBtn(
-  state.matches.length - state["books-per-page"],
-  state["books-per-page"] === state.matches.length
-);
+updateShowMoreBtn(state.matches.length - state["books-per-page"]);
 
 // TODO: add comment for the below process
 const allGenresOption = document.createElement("option");
@@ -71,13 +75,61 @@ const handleToggleSearch = (event) => {
   const { title, genres, authors } = search;
 
   if (isCancel) {
-    title.value = "";
-    genres.value = "any";
-    authors.value = "any";
+    search.form.reset();
     search.overlay.open = false;
   } else {
     search.overlay.open = true;
   }
+};
+
+//     window.scrollTo({ top: 0, behavior: 'smooth' });
+const handleSearch = (event) => {
+  event.preventDefault();
+  const { title, genres, authors } = search;
+  const searchResults = [];
+
+  for (const book of books) {
+    const titleMatch =
+      title.value.trim() === "" ||
+      book.title.toLowerCase().includes(title.value.toLowerCase());
+    const authorMatch =
+      authors.value === "any" || book.author === authors.value;
+    const genreMatch =
+      genres.value === "any" || book.genres.includes(genres.value);
+
+    if (titleMatch && authorMatch && genreMatch) searchResults.push(book);
+  }
+
+  list.items.innerHTML = "";
+
+  if (searchResults.length < 1) {
+    state["books-per-page"] = DEFAULT_BOOKS_PER_PAGE;
+    state["extracted-books"] = [];
+    state.matches = [];
+
+    list.message.classList.add("list__message_show");
+    updateShowMoreBtn(0);
+  } else {
+    list.message.classList.remove("list__message_show");
+    state.matches = searchResults;
+
+    state["books-per-page"] =
+      searchResults.length >= DEFAULT_BOOKS_PER_PAGE
+        ? DEFAULT_BOOKS_PER_PAGE
+        : searchResults.length;
+
+    state["extracted-books"] =
+      state["books-per-page"] === searchResults.length
+        ? state.matches
+        : state.matches.slice(0, state["books-per-page"]);
+
+    loadListItems(state["extracted-books"]);
+    updateShowMoreBtn(state.matches.length - state["books-per-page"]);
+  }
+
+  search.form.reset();
+  search.overlay.open = false;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
 /**
@@ -137,10 +189,7 @@ const handleShowMore = (event) => {
   );
 
   loadListItems(itemsToLoad);
-  updateShowMoreBtn(
-    state.matches.length - state["books-per-page"],
-    state["books-per-page"] === state.matches.length
-  );
+  updateShowMoreBtn(state.matches.length - state["books-per-page"]);
 };
 
 // data-list-close.click() { data-list-active.open === false }
@@ -154,68 +203,6 @@ const handleShowMore = (event) => {
 // data-header-search.click() {
 //     data-search-overlay.open === true ;
 //     data-search-title.focus();
-// }
-
-// data-search-form.click(filters) {
-//     preventDefault()
-//     const formData = new FormData(event.target)
-//     const filters = Object.fromEntries(formData)
-//     result = []
-
-//     for (book; booksList; i++) {
-//         titleMatch = filters.title.trim() = '' && book.title.toLowerCase().includes[filters.title.toLowerCase()]
-//         authorMatch = filters.author = 'any' || book.author === filters.author
-
-//         {
-//             genreMatch = filters.genre = 'any'
-//             for (genre; book.genres; i++) { if singleGenre = filters.genre { genreMatch === true }}}
-//         }
-
-//         if titleMatch && authorMatch && genreMatch => result.push(book)
-//     }
-
-//     if display.length < 1
-//     data-list-message.class.add('list__message_show')
-//     else data-list-message.class.remove('list__message_show')
-
-//     data-list-items.innerHTML = ''
-//     const fragment = document.createDocumentFragment()
-//     const extracted = source.slice(range[0], range[1])
-
-//     for ({ author, image, title, id }; extracted; i++) {
-//         const { author: authorId, id, image, title } = props
-
-//         element = document.createElement('button')
-//         element.classList = 'preview'
-//         element.setAttribute('data-preview', id)
-
-//         element.innerHTML = /* html */ `
-//             <img
-//                 class="preview__image"
-//                 src="${image}"
-//             />
-
-//             <div class="preview__info">
-//                 <h3 class="preview__title">${title}</h3>
-//                 <div class="preview__author">${authors[authorId]}</div>
-//             </div>
-//         `
-
-//         fragment.appendChild(element)
-//     }
-
-//     data-list-items.appendChild(fragments)
-//     initial === matches.length - [page * BOOKS_PER_PAGE]
-//     remaining === hasRemaining ? initial : 0
-//     data-list-button.disabled = initial > 0
-
-//     data-list-button.innerHTML = /* html */ `
-//         <span>Show more</span>
-//         <span class="list__remaining"> (${remaining})</span>
-//     `
-
-//     window.scrollTo({ top: 0, behavior: 'smooth' });
-//     data-search-overlay.open = false
 // }
 
 // data-list-items.click() {
@@ -242,6 +229,7 @@ const handleShowMore = (event) => {
 
 search.button.addEventListener("click", handleToggleSearch);
 search.cancel.addEventListener("click", handleToggleSearch);
+search.form.addEventListener("submit", handleSearch);
 
 settings.button.addEventListener("click", handleToggleSettings);
 settings["overlay-cancel"].addEventListener("click", handleToggleSettings);
