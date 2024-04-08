@@ -6,15 +6,16 @@ import {
   state,
   themeColors,
 } from "./data.js";
-import { documentHtml, loadListItems, updateShowMoreBtn } from "./view.js";
+import {
+  documentHtml,
+  loadBookOverlayData,
+  loadListItems,
+  updateShowMoreBtn,
+} from "./view.js";
 
 const { list, settings, search } = documentHtml;
 
-state.matches = books;
-// page = 1;
-
 if (!books && !Array.isArray(books)) throw new Error("Source required");
-// if (!range && range.length < 2) throw new Error('Range must be an array with two numbers')
 
 // TODO: write a comment for this process below
 if (
@@ -34,6 +35,7 @@ if (
   );
 }
 
+state.matches = books;
 state["extracted-books"] = state.matches.slice(0, state["books-per-page"]);
 
 loadListItems(state["extracted-books"]);
@@ -72,7 +74,6 @@ for (const [id, name] of Object.entries(authors)) {
  */
 const handleToggleSearch = (event) => {
   const isCancel = event.target === search.cancel;
-  const { title, genres, authors } = search;
 
   if (isCancel) {
     search.form.reset();
@@ -82,7 +83,10 @@ const handleToggleSearch = (event) => {
   }
 };
 
-//     window.scrollTo({ top: 0, behavior: 'smooth' });
+/**
+ * TODO: write JSDoc comment for this event handler
+ * @param {Event} event
+ */
 const handleSearch = (event) => {
   event.preventDefault();
   const { title, genres, authors } = search;
@@ -169,6 +173,26 @@ const handleSaveSettings = (event) => {
 };
 
 /**
+ * TODO: write JSDoc comment for the below
+ * @param {Event} event
+ */
+const handleToggleListItem = (event) => {
+  const { id } = event.target.dataset;
+  const isPreviewItem = id ? true : false;
+  const isCloseBtn = event.target === list["overlay-close"];
+
+  if (isCloseBtn) {
+    list.overlay.open = false;
+  } else if (isPreviewItem) {
+    const book = state["extracted-books"].filter((item) => item.id === id)[0];
+
+    loadBookOverlayData(book);
+
+    list.overlay.open = true;
+  }
+};
+
+/**
  * TODO: complete JSDoc comment for this function
  * @param {Event} event
  */
@@ -192,41 +216,7 @@ const handleShowMore = (event) => {
   updateShowMoreBtn(state.matches.length - state["books-per-page"]);
 };
 
-// data-list-close.click() { data-list-active.open === false }
-
-// data-list-button.click() {
-//     document.querySelector([data-list-items]).appendChild(createPreviewsFragment(matches, page x BOOKS_PER_PAGE, {page + 1} x BOOKS_PER_PAGE]))
-//     actions.list.updateRemaining()
-//     page = page + 1
-// }
-
-// data-header-search.click() {
-//     data-search-overlay.open === true ;
-//     data-search-title.focus();
-// }
-
-// data-list-items.click() {
-//     pathArray = Array.from(event.path || event.composedPath())
-//     active;
-
-//     for (node; pathArray; i++) {
-//         if active break;
-//         const previewId = node?.dataset?.preview
-
-//         for (const singleBook of books) {
-//             if (singleBook.id === id) active = singleBook
-//         }
-//     }
-
-//     if !active return
-//     data-list-active.open === true
-//     data-list-blur + data-list-image === active.image
-//     data-list-title === active.title
-
-//     data-list-subtitle === '${authors[active.author]} (${Date(active.published).year})'
-//     data-list-description === active.description
-// }
-
+// TODO: add comment to destinguish event listeners
 search.button.addEventListener("click", handleToggleSearch);
 search.cancel.addEventListener("click", handleToggleSearch);
 search.form.addEventListener("submit", handleSearch);
@@ -236,3 +226,5 @@ settings["overlay-cancel"].addEventListener("click", handleToggleSettings);
 settings.form.addEventListener("submit", handleSaveSettings);
 
 list.button.addEventListener("click", handleShowMore);
+list.items.addEventListener("click", handleToggleListItem);
+list["overlay-close"].addEventListener("click", handleToggleListItem);

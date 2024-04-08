@@ -9,6 +9,12 @@ export const documentHtml = {
     message: document.querySelector("[data-list-message]"),
     button: document.querySelector("[data-list-button]"),
     overlay: document.querySelector("[data-list-active]"),
+    "overlay-close": document.querySelector("[data-list-close]"),
+    "overlay-image": document.querySelector("[data-list-image]"),
+    "overlay-blur": document.querySelector("[data-list-blur]"),
+    "overlay-title": document.querySelector("[data-list-title]"),
+    "overlay-subtitle": document.querySelector("[data-list-subtitle]"),
+    "overlay-description": document.querySelector("[data-list-description]"),
   },
   search: {
     button: document.querySelector("[data-header-search]"),
@@ -83,4 +89,21 @@ export const updateShowMoreBtn = (booksLeft) => {
       <span>Show more <span class="list__remaining">(${booksLeft})</span></span>
   `;
   button.disabled = booksLeft === 0;
+};
+
+/**
+ * TODO: complete JSDoc comment
+ * @param {*} book
+ */
+export const loadBookOverlayData = (book) => {
+  const { list } = documentHtml;
+  const publishedDate = new Date(book.published);
+
+  list["overlay-image"].setAttribute("src", book.image);
+  list["overlay-blur"].setAttribute("src", book.image);
+  list["overlay-title"].innerText = `${book.title}`;
+  list["overlay-subtitle"].innerText = `${
+    authors[book.author]
+  } (${publishedDate.getFullYear()})`;
+  list["overlay-description"].innerText = `${book.description}`;
 };
