@@ -1,5 +1,19 @@
+// The default number of books to display on the page.
 export const DEFAULT_BOOKS_PER_PAGE = 36;
 
+/**
+ * @typedef {Object} State
+ * @property {string} theme - The current theme of the website. It can be either "day" or "night".
+ * @property {Array} extracted-books - An array to store the books that have been extracted.
+ * @property {number} books-per-page - The current number of books displayed on the page.
+ * @property {Array} matches - An array to store the matched books based on a search or filter criteria.
+ */
+
+/**
+ * The active state of the app expressed as an object literal. It serves as a single source of truth for
+ * the state that the app is in at any given point.
+ * @type {State}
+ */
 export const state = {
   theme: "day",
   "extracted-books": [],
@@ -7,6 +21,9 @@ export const state = {
   matches: [],
 };
 
+/**
+ * The RGB color values for the different app themes.
+ */
 export const themeColors = {
   day: {
     dark: "10, 10, 20",
@@ -18,6 +35,9 @@ export const themeColors = {
   },
 };
 
+/**
+ * A predefined list of book authors whose keys are the unique IDs of the author and the values are the authors' names.
+ */
 export const authors = {
   "194e164b-9365-4358-b44a-f28a93cc528f": "Steven D. Levitt",
   "76e8065c-fd7a-4a8b-a8ea-6105a47d0781": "Stephen J. Dubner",
@@ -108,6 +128,9 @@ export const authors = {
   "37018341-31f4-4ffa-8755-a49979c218dd": "Suzanne Collins",
 };
 
+/**
+ * A predefined list of book genres, where the key is the unique ID and the value is the title of the genre.
+ */
 export const genres = {
   "a4f80b3e-3e96-4266-b729-e09b71793182": "Economics",
   "6dd5bb6e-0172-4d6e-aa18-26f00954dd7a": "Non-fiction",
@@ -179,6 +202,9 @@ export const genres = {
   "64c4197d-5f8e-4bff-b440-6d19bc591fd9": "Magic",
 };
 
+/**
+ * A predefined list of books that will be accessible and displayable on the app.
+ */
 export const books = [
   {
     id: "760b3450-9c86-42d0-8eff-e793bf823756",
