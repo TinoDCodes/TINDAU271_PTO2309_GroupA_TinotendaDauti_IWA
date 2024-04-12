@@ -30,14 +30,25 @@ The following user stories have been addressed to achieve the desired functional
 Once you have the application running, you can use it as follows:
 
 1. **Viewing Book Previews**: On the homepage, you will see a list of book previews. Each preview includes the book's title, author, and an associated cover image.
+   ![book_connect_1](https://github.com/TinoDCodes/TINDAU271_PTO2309_GroupA_TinotendaDauti_IWA/assets/148287175/6e202a08-c026-4cdb-b753-a020a6d9943a)
+
+
 
 2. **Reading Book Summaries**: Click on a book preview to read a summary of the book. This can help you decide whether you want to read the book.
+   ![book_connect_2](https://github.com/TinoDCodes/TINDAU271_PTO2309_GroupA_TinotendaDauti_IWA/assets/148287175/deaa33a8-608b-4bf0-b633-e78b48303624)
+
+
 
 3. **Checking Publication Dates**: The date of publication is also listed for each book above the summary, which can help you determine how easy it is to obtain the book second-hand.
-
+ 
 4. **Searching for Books**: Click the search button at the top of the page to open the search dialog. You can use the search dialog to find books based on specific text phrases, genres and authors.
+   ![book_connect_3](https://github.com/TinoDCodes/TINDAU271_PTO2309_GroupA_TinotendaDauti_IWA/assets/148287175/771b0831-273d-4a56-8ed2-2d0a8eb0ac48)
+
+
 
 5. **Toggling Between Dark and Light Modes**: Click on the profile button at the top right of the page to toggle the settings dialog. From this dialog you'll be able to select 'day' or 'night' mode from the dropdown and click save to change to your desired theme.
+   ![book_connect_4](https://github.com/TinoDCodes/TINDAU271_PTO2309_GroupA_TinotendaDauti_IWA/assets/148287175/3ea8b78a-2d20-4f42-a290-4a073d1639de)
+
 
 ## Author
 
