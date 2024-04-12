@@ -37,6 +37,8 @@ export const documentHtml = {
   },
 };
 
+//--------------------- HELPER FUNCTIONS ------------------------//
+
 /**
  * Creates a book preview element with given details.
  *
@@ -135,6 +137,8 @@ export const loadBookOverlayData = (book) => {
   } (${publishedDate.getFullYear()})`;
   list["overlay-description"].innerText = `${book.description}`;
 };
+
+//--------------------- LOAD SEARCH SELECT OPTIONS ------------------------//
 
 const { search } = documentHtml;
 

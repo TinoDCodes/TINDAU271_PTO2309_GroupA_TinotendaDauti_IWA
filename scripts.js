@@ -224,6 +224,7 @@ const handleShowMore = (event) => {
 };
 
 //--------------------- ADDING APP EVENT LISTENERS ------------------------//
+
 search.button.addEventListener("click", handleToggleSearch);
 search.cancel.addEventListener("click", handleToggleSearch);
 search.form.addEventListener("submit", handleSearch);
